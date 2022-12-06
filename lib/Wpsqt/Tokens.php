@@ -121,9 +121,8 @@ class Wpsqt_Tokens {
 
 		if ($_SESSION['wpsqt']['current_type'] == 'quiz' && isset($_SESSION['wpsqt']['current_score'])) {
 			// Calculate percentage
-			preg_match('$(\d*)\scorrect\sout\sof\s(\d*)$', $_SESSION['wpsqt']['current_score'], $score);
-			if (isset($score) && is_array($score) && isset($score[2]) && $score[2] != 0) {
-				$percentage = $score[1] / $score[2] * 100;
+			if ( isset($_SESSION['wpsqt']['correct_answers']) && isset($_SESSION['wpsqt']['total_points']) ) {
+				$percentage = $_SESSION['wpsqt']['correct_answers'] / $_SESSION['wpsqt']['total_points'] * 100;
 				$percentage = number_format($percentage, 1) . '%';
 			} else {
 				$percentage = '?%';
@@ -145,8 +144,19 @@ class Wpsqt_Tokens {
 		$this->setTokenValue('SCORE_COMPETENT', (isset($_SESSION['wpsqt'][$quizName]['details']['pass_mark']) && $_SESSION['wpsqt'][$quizName]['details']['pass_mark'] > (int)rtrim($percentage, "%")) ? 'Not yet competent' : 'Competent');
 
 		if (isset($_SESSION['wpsqt']['result_id'])) {
-			$this->setTokenValue('RESULT_URL'  , WPSQT_URL_MAIN."&section=results&subsection=mark&id=".$_SESSION['wpsqt']['item_id']."&resultid=".$_SESSION['wpsqt']['result_id'] );
-			$this->setTokenValue('RESULT_VIEW_URL'  , WPSQT_URL_MAIN."&section=results&subsection=view&id=".$_SESSION['wpsqt']['item_id']."&resultid=".$_SESSION['wpsqt']['result_id'] );
+			switch ($_SESSION['wpsqt']['current_type']){
+				case 'quiz':
+				case 'poll':
+					$this->setTokenValue('RESULT_URL'  , WPSQT_URL_MAIN."&amp;section=results&subsection=mark&id=".$_SESSION['wpsqt']['item_id']."&resultid=".$_SESSION['wpsqt']['result_id'] );
+					$this->setTokenValue('RESULT_VIEW_URL'  , WPSQT_URL_MAIN."&amp;section=results&subsection=view&id=".$_SESSION['wpsqt']['item_id']."&resultid=".$_SESSION['wpsqt']['result_id'] );
+					break;
+				case 'survey':
+					$this->setTokenValue('RESULT_URL'  , WPSQT_URL_MAIN."&amp;section=results&subsection=survey&id=".$_SESSION['wpsqt']['item_id']."&resultid=".$_SESSION['wpsqt']['result_id'] );
+					$this->setTokenValue('RESULT_VIEW_URL'  , WPSQT_URL_MAIN."&amp;section=results&subsection=total&id=".$_SESSION['wpsqt']['item_id']."&resultid=".$_SESSION['wpsqt']['result_id'] );
+					break;
+				default:
+					break;
+			}
 		}
 
 		$this->setTokenValue('USER_EMAIL'  , ( isset($_SESSION['wpsqt'][$quizName]['person']['email']) ) ? $_SESSION['wpsqt'][$quizName]['person']['email'] : '');

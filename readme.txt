@@ -1,11 +1,11 @@
 === WP Survey And Quiz Tool ===
-Contributors: Fubra,Backie,olliea95
-Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=99WUGVV4HY5ZE&lc=GB&item_name=CATN%20Plugins&item_number=catn&currency_code=GBP&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHosted 
+Contributors: Fubra,olliea95
+Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=99WUGVV4HY5ZE&lc=GB&item_name=CATN%20Plugins&item_number=catn&currency_code=GBP&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHosted
 Tags: Quiz,test,exam,survey,results,email,quizzes,charts,google charts,wpsqt,tool,poll,polling,polls
 Requires at least: 3.1
-Tested up to: 3.4.1
+Tested up to: 3.9.1
 Text Domain: wp-survey-and-quiz-tool
-Stable tag: 2.13
+Stable tag: 2.14.1
 A highly customisable Quiz, Survey and Poll plugin to which allows for unlimited questions and sections.
 
 == Description ==
@@ -42,7 +42,7 @@ All documentation can be found on the <a href="https://github.com/fubralimited/W
 
 **Developer Features**
 
-Currently 30+ filters and hooks to use throughout the plugin to help extend it without editing the plugin. 
+Currently 30+ filters and hooks to use throughout the plugin to help extend it without editing the plugin.
 
 Custom pages allows for the theming of the plugin pages without editing the plugin.
 
@@ -64,15 +64,42 @@ Any further issues then feel free to create a thread on the <a href="http://word
 
 == ChangeLog ==
 
+= 2.14.1 =
+* Fixed compatiblity issues with PHP 5.2
+* Fixing double serialization bug for quiz results
+* Added export poll to csv feature
+* Other minors bugs fixed
+
+= 2.14 =
+
+* Fixed results display for surveys
+* Include an option in the shortcode results for showing results as a chart
+* Change the quiz autoreview display
+* Fixed the save/resume quiz feature
+* Change the plugin icon in the control panel
+* Other minors bugs fixed
+
+= 2.13.2 =
+
+* Added the option to display question numbers for quizzes
+* Fixed new answers added to polls while active not displaying in the results row correctly
+* Inserted a class to the "Exam Finished" text to allow removing this message
+* Inserted the option for polls to use WP details so that limiting by WP user works
+* Only allow one quiz to be running at a time - helps when quizzes are in posts and multiple posts are displayed at once
+* Remove advertising links to CatN
+* Remove the upgrade notice and proceed to perform upgrades automtically when required
+
 = 2.13.1 =
 
 * Added several more strings for translation
 * Added a link to the navbar for survey Total Results
 * Fixed undefined variable notices
 * Fixed progress bar displaying incorrectly when a contact form was enabled
-* Fixed contact form not occasionally not displaying
+* Fixed contact form occasionally not displaying
 * Fixed error when using the navbar after viewing a survey's Total Results
 * Fixed Likert answers in a survey not being cached correctly
+* Fixed empty poll results being allowed for the single question type
+* Fixed emails not being sent occasionally
 * Changed timer to be client side, this fixes issues with loosing time due to page load
 * Updated the included jQuery UI library to fix issues with WordPress 3.5
 
@@ -403,10 +430,10 @@ Any further issues then feel free to create a thread on the <a href="http://word
 * Many spelling/grammatical errors fixed
 * Some styling changes to the admin pages to make them look prettier
 
-= 2.0-beta2 = 
+= 2.0-beta2 =
 
 * Added scores and percentage columns to quiz result list#
-* Added ability to send notification email 
+* Added ability to send notification email
 * Added navbar linking system for easier navigation throughout the plugin.
 * Added image option for quizzes
 * Added action in display question.
@@ -423,7 +450,7 @@ Any further issues then feel free to create a thread on the <a href="http://word
 * Added PDF functionality
 * Added ability to have default answer choices on multiple choice questions
 * Fixed design flaws with custom forms.
-* Added image field for questions 
+* Added image field for questions
 * Added filters and improved extendibility
 * Whole bunch of other stuff
 

@@ -77,7 +77,6 @@ class Wpsqt_Shortcode {
 	 * @since 2.0
 	 */
 	public function __construct($identifier,$type){
-
 		global $wpdb;
 
 		if ( !isset($_SESSION['wpsqt']) ){
@@ -132,17 +131,17 @@ class Wpsqt_Shortcode {
 
 				$_SESSION['wpsqt'] = $answers;
 				$_POST = unserialize($state['post']);
-	?>
-	<script type="text/javascript">
-		function setCookie(c_name,value,exdays) {
-			var exdate=new Date();
-			exdate.setDate(exdate.getDate() + exdays);
-			var c_value=escape(value) + ((exdays==null) ? "" : "; expires="+exdate.toUTCString());
-			document.cookie=c_name + "=" + c_value;
-		}
-		setCookie('wpsqt_<?php echo $_SESSION['wpsqt'][$identifier]['details']['id']; ?>_state', '', '-10');
-	</script>
-	<?php
+				?>
+				<script type="text/javascript">
+					function setCookie(c_name,value,exdays) {
+						var exdate=new Date();
+						exdate.setDate(exdate.getDate() + exdays);
+						var c_value=escape(value) + ((exdays==null) ? "" : "; expires="+exdate.toUTCString());
+						document.cookie=c_name + "=" + c_value;
+					}
+					setCookie('wpsqt_<?php echo $_SESSION['wpsqt'][$identifier]['details']['id']; ?>_state', '', '-10');
+				</script>
+				<?php
 
 				$this->_key = $state['current_section'];
 				$this->_step = $state['current_section'];
@@ -207,7 +206,7 @@ class Wpsqt_Shortcode {
 				return;
 			}
 		}
-		
+
 		// Checks if limiting per WP user is enabled and if the user has already taken it
 		if (isset($_SESSION['wpsqt'][$quizName]['details']['limit_one_wp']) && $_SESSION['wpsqt'][$quizName]['details']['limit_one_wp'] == 'yes') {
 			global $user_login;
@@ -304,7 +303,7 @@ class Wpsqt_Shortcode {
 					// Resume timer
 					$timerVal = $timerVal - $_POST['wpsqt_time_elapsed'];
 				}
-				echo '<div class="timer" style="float: right;"></div>';
+				echo '<div class="timer" style="float: right;">&nbsp;</div>';
 				$timerStrings = array(
 					'timeleft' => __('Time Left:', 'wp-survey-and-quiz-tool'),
 					'mins' => __('minutes and', 'wp-survey-and-quiz-tool'),
@@ -355,7 +354,7 @@ class Wpsqt_Shortcode {
 				$_SESSION['wpsqt'][$quizName]['sections'][$pastSectionKey]['answers'] = array();
 			}
 			$canAutoMark = true;
-			if (isset($_SESSION["wpsqt"][$quizName]["sections"][$pastSectionKey]["questions"]) && is_array($_SESSION["wpsqt"][$quizName]["sections"][$pastSectionKey]["questions"])) { 
+			if (isset($_SESSION["wpsqt"][$quizName]["sections"][$pastSectionKey]["questions"]) && is_array($_SESSION["wpsqt"][$quizName]["sections"][$pastSectionKey]["questions"])) {
 				foreach ($_SESSION["wpsqt"][$quizName]["sections"][$pastSectionKey]["questions"] as $questionData ){
 					if ( isset($questionData['required']) && $questionData['required'] == "yes") {
 						$requiredQuestions['exist']++;
@@ -395,13 +394,15 @@ class Wpsqt_Shortcode {
 
 						if ( $subCorrect === $subNumOfCorrect && $subIncorrect === 0 ){
 							$correct += $questionData["points"];
-							$answerMarked['mark'] = __('correct', 'wp-survey-and-quiz-tool');
+							__('correct', 'wp-survey-and-quiz-tool');
+							$answerMarked['mark'] = 'correct';
 						}
 						else {
 							// TODO Insert ability to set point per answer scores
 
 							$incorrect += $questionData["points"];
-							$answerMarked['mark'] = __('incorrect', 'wp-survey-and-quiz-tool');
+							__('incorrect', 'wp-survey-and-quiz-tool');
+							$answerMarked['mark'] = 'incorrect';
 						}
 					} else {
 							$canAutoMark = false;
@@ -451,7 +452,7 @@ class Wpsqt_Shortcode {
 			$this->showSection();
 
 			if (isset($_SESSION['wpsqt'][$quizName]['details']['show_progress_bar']) && $_SESSION['wpsqt'][$quizName]['details']['show_progress_bar'] == 'yes') {
-				// Progress bar 
+				// Progress bar
 				$current_step = $this->_step + 1;
 				// If there is a contact page then loose 1
 				if (isset($_SESSION['wpsqt'][$quizName]['details']['contact']) && $_SESSION['wpsqt'][$quizName]['details']['contact'] == "yes") {
@@ -496,7 +497,7 @@ class Wpsqt_Shortcode {
 		$section = $_SESSION["wpsqt"][$quizName]["sections"][$sectionKey];
 		$orderBy = ($section["order"] == "random") ? "RAND()" : "`order` ".strtoupper($section["order"]);
 		$_SESSION["wpsqt"][$quizName]["sections"][$sectionKey]["questions"] = array();
-		
+
 
 		if ( !empty($_SESSION["wpsqt"][$quizName]["sections"][$sectionKey]['limit']) ){
 			$end = " LIMIT 0,".$_SESSION["wpsqt"][$quizName]["sections"][$sectionKey]['limit'];
@@ -544,8 +545,6 @@ class Wpsqt_Shortcode {
 			// Allow an extra 5 seconds per section for loading
 			$loading_allowance = count($_SESSION['wpsqt'][$quizName]['sections']) * 5;
 
-			var_dump($start_time + $time_allowed + $loading_allowance);
-			var_dump(time());
 			if (($start_time + $time_allowed + $loading_allowance) < time()) {
 				_e('You have taken longer than the allowed time.', 'wp-survey-and-quiz-tool');
 				return;
@@ -595,7 +594,7 @@ class Wpsqt_Shortcode {
 			}
 
 			foreach ( $quizSection['questions'] as $key => $question ){
-				//  AutoMarkWhenFreetext: 'no' and 'include' will mark freetext questions as 'incorrect', 
+				//  AutoMarkWhenFreetext: 'no' and 'include' will mark freetext questions as 'incorrect',
 				// 'exclude will ignore the freetext questions' and not add them to the $totalPoints
 				if (  ! (  preg_match( "/exclude/" , $AutoMarkWhenFreetxt) == 1  && ($question['type'] == "Free Text"))   ){
 					$totalPoints += $question['points'];
@@ -613,7 +612,10 @@ class Wpsqt_Shortcode {
 		}
 
 		if ( $canAutoMark === true ){
-			$_SESSION['wpsqt']['current_score'] = $correctAnswers." correct out of ".$totalPoints;
+			$_SESSION['wpsqt']['current_score'] = sprintf( __("%d correct out of %d", 'wp-survey-and-quiz-tool'), $correctAnswers, $totalPoints );
+			
+			$_SESSION['wpsqt']['correct_answers'] = $correctAnswers;
+			$_SESSION['wpsqt']['total_points'] = $totalPoints;
 		} else {
 			$_SESSION['wpsqt']['current_score'] = __('Quiz can\'t be auto marked', 'wp-survey-and-quiz-tool');
 		}
@@ -679,7 +681,7 @@ class Wpsqt_Shortcode {
 		if ( $this->_type == "survey" || $this->_type == "poll" ){
 			$this->_cacheSurveys();
 		}
-		
+
 		if ( isset($_SESSION['wpsqt'][$quizName]['details']['limit_one_cookie']) && $_SESSION['wpsqt'][$quizName]['details']['limit_one_cookie'] == 'yes' ){
 			// Create the cookie
 			?>
@@ -739,8 +741,8 @@ class Wpsqt_Shortcode {
 					$cachedSections[$sectionKey]['questions'][$question['id']]['answers'] = array();
 				}
 				if ( $cachedSections[$sectionKey]['questions'][$question['id']]['type'] == "Multiple Choice" ||
-					 $cachedSections[$sectionKey]['questions'][$question['id']]['type'] == "Dropdown" || 
-					 $cachedSections[$sectionKey]['questions'][$question['id']]['type'] == 'Single' || 
+					 $cachedSections[$sectionKey]['questions'][$question['id']]['type'] == "Dropdown" ||
+					 $cachedSections[$sectionKey]['questions'][$question['id']]['type'] == 'Single' ||
 					 $cachedSections[$sectionKey]['questions'][$question['id']]['type'] == 'Multiple') {
 					if ( empty($cachedSections[$sectionKey]['questions'][$question['id']]['answers']) ) {
 						foreach ( $question['answers'] as $answerKey => $answers ){
@@ -818,6 +820,12 @@ class Wpsqt_Shortcode {
 					if(isset($section['answers'][$question['id']])) {
 						$givenAnswer = array();
 						foreach( $section['answers'][$question['id']]['given'] as $gAnswer) {
+							if (!isset($cachedSections[$sectionKey]['questions'][$question['id']]['answers'][$gAnswer])) {
+								$cachedSections[$sectionKey]['questions'][$question['id']]['answers'][$gAnswer] = array(
+									'text' => $question['answers'][$gAnswer]['text'],
+									'count' => 0,
+								);
+							}
 							$cachedSections[$sectionKey]['questions'][$question['id']]['answers'][$gAnswer]["count"]++;
 						}
 					} else {
@@ -834,7 +842,11 @@ class Wpsqt_Shortcode {
 								$cachedSections[$sectionKey]['questions'][$question['id']]['answers'][$givenAnswerData[0]][$givenAnswerData[1]]['count'] += 1;
 							} else {
 								$givenAnswerData = explode("_", $givenAnswerData);
-								$cachedSections[$sectionKey]['questions'][$question['id']]['answers'][$givenAnswerData[0]][$givenAnswerData[1]]['count'] += 1;
+								if(isset($cachedSections[$sectionKey]['questions'][$question['id']]['answers'][$givenAnswerData[0]][$givenAnswerData[1]]['count'])){
+									$cachedSections[$sectionKey]['questions'][$question['id']]['answers'][$givenAnswerData[0]][$givenAnswerData[1]]['count'] += 1;
+								} else {
+									$cachedSections[$sectionKey]['questions'][$question['id']]['answers'][$givenAnswerData[0]][$givenAnswerData[1]]['count'] = 1;
+								}
 							}
 						}
 					}
@@ -856,6 +868,12 @@ class Wpsqt_Shortcode {
 							$cachedSections[$sectionKey]['questions'][$question['id']]['answers'][$answer]["count"]++;
 						}
 					} else {
+						if (!isset($cachedSections[$sectionKey]['questions'][$question['id']]['answers'][$givenAnswer])) {
+							$cachedSections[$sectionKey]['questions'][$question['id']]['answers'][$givenAnswer] = array(
+								'text' => $question['answers'][$givenAnswer]['text'],
+								'count' => 0,
+							);
+						}
 						$cachedSections[$sectionKey]['questions'][$question['id']]['answers'][$givenAnswer]["count"]++;
 					}
 				}
@@ -886,7 +904,7 @@ class Wpsqt_Shortcode {
 	/**
 	 * Alias to the cache surveys function for polls
 	 * so it can be ran from upgrade script.
-	 * 
+	 *
 	 * @author Ollie Armstrong
 	 */
 	public function cachePoll() {

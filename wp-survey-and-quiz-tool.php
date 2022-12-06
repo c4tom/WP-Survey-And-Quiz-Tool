@@ -5,7 +5,7 @@ Plugin URI: http://catn.com/2010/10/04/wp-survey-and-quiz-tool/
 Description: Allows wordpress owners to create their own web based quizes.
 Author: Fubra Limited
 Author URI: http://www.catn.com
-Version: 2.13
+Version: 2.14
 
 WP Survey And Quiz Tool
 Copyright (C) 2011  Fubra Limited
@@ -50,16 +50,16 @@ define( 'WPSQT_TABLE_QUIZ_STATE'   , $wpdb->get_blog_prefix().'wpsqt_quiz_state'
 define( 'WPSQT_URL_MAIN'             , admin_url('admin.php?page='.WPSQT_PAGE_MAIN) );
 define( 'WPSQT_URL_MAINENTANCE'      , admin_url('admin.php?page='.WPSQT_PAGE_MAINTENANCE) );
 define( 'WPSQT_CONTACT_EMAIL'        , 'support@catn.com' );
-define( 'WPSQT_VERSION'              , '2.13' );
+define( 'WPSQT_VERSION'              , '2.14.1' );
 define( 'WPSQT_DIR'                  , realpath(dirname(__FILE__)).'/') ;
 define( 'WPSQT_FILE'     , __FILE__ );
 
 require_once WPSQT_DIR.'lib/Wpsqt/Core.php';
 require_once WPSQT_DIR.'lib/Wpsqt/System.php';
 
-// Call Wpsqt_Installer Class to write in WPSQT tables on activation 
+// Call Wpsqt_Installer Class to write in WPSQT tables on activation
 register_activation_hook ( __FILE__, 'wpsqt_main_install' );
-	
+
 $oldVersion = get_option('wpsqt_version');
 update_option('wpsqt_version',WPSQT_VERSION);
 if ( !get_option('wpsqt_number_of_items') ){
@@ -67,8 +67,7 @@ if ( !get_option('wpsqt_number_of_items') ){
 }
 // Simple way of checking if an it's an update or not.
 if ( !empty($oldVersion) && (version_compare($oldVersion, WPSQT_VERSION) < 0) ){
-	update_option('wpsqt_update_required',true);
-	update_option('wpsqt_old_version',$oldVersion);
+	require_once WPSQT_DIR.'lib/Wpsqt/Page/Maintenance/upgradeScript.php';
 }
 
 // Make sure admin has the capability
@@ -83,7 +82,7 @@ $role->add_cap('wpsqt-manage');
 function wpsqt_main_install(){
 
 	global $wpdb;
-	
+
 	$wpdb->query("CREATE TABLE IF NOT EXISTS `".WPSQT_TABLE_QUESTIONS."` (
 				  `id` int(11) NOT NULL AUTO_INCREMENT,
 				  `name` varchar(512) NOT NULL,
@@ -126,7 +125,7 @@ function wpsqt_main_install(){
 				  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 				  PRIMARY KEY (`id`)
 				) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;");
-	
+
 	$wpdb->query("CREATE TABLE IF NOT EXISTS `".WPSQT_TABLE_QUIZ_SURVEYS."` (
 				  `id` int(11) NOT NULL AUTO_INCREMENT,
 				  `name` varchar(512) NOT NULL,
@@ -134,7 +133,7 @@ function wpsqt_main_install(){
 				  `type` varchar(266) NOT NULL,
 				  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 				  PRIMARY KEY (`id`)
-				) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;");	
+				) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;");
 
 	$wpdb->query("CREATE TABLE IF NOT EXISTS `".WPSQT_TABLE_SECTIONS."` (
 				  `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -155,6 +154,16 @@ function wpsqt_main_install(){
 				  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 				  PRIMARY KEY (`id`)
 				) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;");
+
+	$wpdb->query("CREATE TABLE IF NOT EXISTS `".WPSQT_TABLE_QUIZ_STATE."` (
+		  		  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+				  `uid` mediumtext,
+			  	  `answers` text,
+				  `post` text,
+				  `quiz_id` int(11) DEFAULT NULL,
+				  `current_section` int(11) DEFAULT NULL,
+					  PRIMARY KEY (`id`)
+				  ) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8;");
 }
 if (is_admin()){
 	if (is_multisite() && get_option('wpsqt_manual') != 1) {
